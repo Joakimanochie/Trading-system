@@ -216,3 +216,12 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# quant-os project specifics
+.env
+logs/
+charts/
+*.png
+data/exports/
+celerybeat-schedule.db
+

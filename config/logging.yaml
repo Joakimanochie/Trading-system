@@ -1,0 +1,74 @@
+version: 1
+disable_existing_loggers: false
+
+formatters:
+  json:
+    class: pythonjsonlogger.jsonlogger.JsonFormatter
+    format: "%(asctime)s %(name)s %(levelname)s %(message)s"
+  standard:
+    format: "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+    datefmt: "%Y-%m-%dT%H:%M:%S"
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: standard
+    stream: ext://sys.stdout
+
+  file_app:
+    class: logging.handlers.RotatingFileHandler
+    level: INFO
+    formatter: json
+    filename: logs/app.log
+    maxBytes: 10485760   # 10 MB
+    backupCount: 5
+
+  file_crt:
+    class: logging.handlers.RotatingFileHandler
+    level: DEBUG
+    formatter: json
+    filename: logs/crt_agent.log
+    maxBytes: 10485760
+    backupCount: 5
+
+  file_risk:
+    class: logging.handlers.RotatingFileHandler
+    level: INFO
+    formatter: json
+    filename: logs/risk_agent.log
+    maxBytes: 10485760
+    backupCount: 3
+
+  file_execution:
+    class: logging.handlers.RotatingFileHandler
+    level: INFO
+    formatter: json
+    filename: logs/execution_agent.log
+    maxBytes: 10485760
+    backupCount: 3
+
+loggers:
+  quant_os:
+    level: DEBUG
+    handlers: [console, file_app]
+    propagate: false
+
+  quant_os.agents.crt:
+    level: DEBUG
+    handlers: [console, file_crt]
+    propagate: false
+
+  quant_os.agents.risk:
+    level: INFO
+    handlers: [console, file_risk]
+    propagate: false
+
+  quant_os.agents.execution:
+    level: INFO
+    handlers: [console, file_execution]
+    propagate: false
+
+root:
+  level: WARNING
+  handlers: [console]

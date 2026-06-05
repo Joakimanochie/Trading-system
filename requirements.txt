@@ -1,0 +1,45 @@
+# Web framework
+fastapi>=0.111.0
+uvicorn[standard]>=0.30.0
+
+# Database
+sqlalchemy>=2.0
+alembic>=1.13
+psycopg2-binary>=2.9
+
+# Cache / task queue
+redis>=5.0
+celery[redis]>=5.4
+
+# Data & quant
+pandas>=2.2
+numpy>=1.26
+yfinance>=0.2.40
+vectorbt>=0.26
+matplotlib>=3.9
+mplfinance>=0.12
+
+# LLM / AI (OpenAI-compatible SDK — points to NVIDIA NIM)
+openai>=1.30.0
+
+# MetaTrader 5 (Windows only — comment out on Linux)
+# MetaTrader5>=5.0
+
+# Utilities
+python-dotenv>=1.0
+pytz>=2024.1
+pydantic>=2.7
+pydantic-settings>=2.2
+httpx>=0.27
+websockets>=12.0
+
+# Orchestration
+langgraph>=0.1
+
+# Dev dependencies
+black>=24.0
+ruff>=0.4
+mypy>=1.10
+pytest>=8.0
+pytest-asyncio>=0.23
+pre-commit>=3.7

@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches: [dev, main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: quant
+          POSTGRES_PASSWORD: quant_pass
+          POSTGRES_DB: quant_os_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 3s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Lint with ruff
+        run: ruff check .
+
+      - name: Type check with mypy
+        run: mypy . --ignore-missing-imports
+
+      - name: Run tests
+        env:
+          DATABASE_URL: postgresql://quant:quant_pass@localhost:5432/quant_os_test
+          REDIS_URL: redis://localhost:6379/0
+          NVIDIA_API_KEY: dummy
+          NVIDIA_NIM_BASE_URL: https://integrate.api.nvidia.com/v1
+          NVIDIA_NIM_MODEL: z-ai/glm-5.1
+          APP_SECRET_KEY: test-secret
+        run: pytest tests/ -v --tb=short

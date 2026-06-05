@@ -1,0 +1,63 @@
+crt:
+  htf: H4           # Higher timeframe: H1 | H4 | D1
+  ltf: M5           # Lower timeframe: M1 | M5 | M15
+  scan_interval_seconds: 60
+  sl_mode: conservative   # conservative | aggressive
+  min_confluence_score: 0
+
+  pairs:
+    - EURUSD
+    - GBPUSD
+    - USDCHF
+    - USDCAD
+    - AUDUSD
+    - USDJPY
+    - NZDUSD
+    - XAUUSD
+    - BTCUSD
+    - ETHUSD
+    - US500
+    - UK100
+
+  htf_ltf_combos:
+    - htf: D1
+      ltf: H1
+    - htf: H4
+      ltf: M15
+    - htf: H4
+      ltf: M5
+    - htf: H1
+      ltf: M5
+
+  filters:
+    pd_array: true
+    session_macro: true
+    premium_discount: true
+    nested_ltf_crt: true
+    mss_fvg: true
+
+  # Session macro windows (UTC)
+  sessions:
+    forex:
+      - name: london_open
+        hour_utc: 6
+        minute_utc: 0
+      - name: ny_open
+        hour_utc: 13
+        minute_utc: 0
+      - name: asian_open
+        hour_utc: 22
+        minute_utc: 0
+    futures:
+      - name: futures_open_1
+        hour_utc: 7
+        minute_utc: 0
+      - name: futures_open_2
+        hour_utc: 11
+        minute_utc: 0
+      - name: futures_open_3
+        hour_utc: 15
+        minute_utc: 0
+
+  # Session window tolerance in minutes before/after the macro window
+  session_window_minutes: 30

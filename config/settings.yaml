@@ -1,0 +1,43 @@
+app:
+  name: quant-os
+  version: "0.1.0"
+
+api:
+  host: "0.0.0.0"
+  port: 8000
+  cors_origins:
+    - "http://localhost:3000"
+
+database:
+  pool_size: 10
+  max_overflow: 20
+  echo: false
+
+redis:
+  db: 0
+
+celery:
+  task_serializer: json
+  result_serializer: json
+  accept_content:
+    - json
+  timezone: UTC
+  enable_utc: true
+
+backtesting:
+  engine: vectorbt
+  commission_bps: 5
+  slippage_bps: 2
+  min_trades: 100
+
+risk:
+  max_drawdown_pct: 0.15
+  daily_loss_limit_pct: 0.02
+  max_leverage: 2.0
+  max_position_concentration: 0.20
+  kelly_fraction: 0.50
+
+execution:
+  mode: MANUAL
+  signal_approval_timeout_mins: 30
+  paper_trade_min_weeks: 4
