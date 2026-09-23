@@ -1,4 +1,4 @@
-"""Smoke tests for NVIDIA NIM client (mocked)."""
+"""Smoke tests for OpenRouter LLM client (mocked)."""
 from __future__ import annotations
 
 import os
@@ -7,12 +7,12 @@ from unittest.mock import MagicMock, patch
 
 def test_nim_complete_non_streaming():
     """nim_complete should call the OpenAI client and return a string."""
-    os.environ.setdefault("NVIDIA_API_KEY", "test-key")
-    os.environ.setdefault("NVIDIA_NIM_BASE_URL", "https://integrate.api.nvidia.com/v1")
-    os.environ.setdefault("NVIDIA_NIM_MODEL", "z-ai/glm-5.1")
+    os.environ.setdefault("OPENROUTER_API_KEY", "test-key")
+    os.environ.setdefault("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1")
+    os.environ.setdefault("OPENROUTER_MODEL", "openrouter/owl-alpha")
 
     mock_response = MagicMock()
-    mock_response.choices[0].message.content = "Hello from GLM-5.1"
+    mock_response.choices[0].message.content = "Hello from owl-alpha"
 
     with patch("agents.shared.nim_client._client", None):
         with patch("agents.shared.nim_client.OpenAI") as MockOpenAI:
@@ -29,7 +29,7 @@ def test_nim_complete_non_streaming():
 
 def test_nim_complete_returns_string_on_stream():
     """nim_complete with stream=True should assemble chunks and return a string."""
-    os.environ.setdefault("NVIDIA_API_KEY", "test-key")
+    os.environ.setdefault("OPENROUTER_API_KEY", "test-key")
 
     chunk1 = MagicMock()
     chunk1.choices = [MagicMock()]

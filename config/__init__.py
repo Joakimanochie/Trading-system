@@ -47,14 +47,13 @@ class Settings(BaseSettings):
     # Redis
     redis_url: str = "redis://localhost:6379/0"
 
-    # NVIDIA NIM / GLM-5.1
-    nvidia_api_key: str = ""
-    nvidia_nim_base_url: str = "https://integrate.api.nvidia.com/v1"
-    nvidia_nim_model: str = "z-ai/glm-5.1"
-    nvidia_nim_max_tokens: int = 16384
-    nvidia_nim_temperature: float = 0.6
-    nvidia_nim_top_p: float = 0.9
-    nvidia_nim_stream: bool = True
+    # OpenRouter / owl-alpha
+    openrouter_api_key: str = ""
+    openrouter_base_url: str = "https://openrouter.ai/api/v1"
+    openrouter_model: str = "openrouter/owl-alpha"
+    openrouter_max_tokens: int = 16384
+    openrouter_temperature: float = 0.6
+    openrouter_stream: bool = True
 
     # Broker — Alpaca
     alpaca_api_key: str = ""
@@ -91,6 +90,9 @@ class Settings(BaseSettings):
     crt_scan_interval_seconds: int = 60
     crt_sl_mode: str = "conservative"
     crt_min_confluence_score: int = 0
+
+    # Photon Agent
+    photon_pairs: str = "EURUSD,GBPUSD,USDCHF,USDCAD,AUDUSD,USDJPY,NZDUSD,XAUUSD"
 
     # Data providers
     polygon_api_key: str = ""
@@ -137,6 +139,10 @@ class Settings(BaseSettings):
     @property
     def crt_pairs_list(self) -> list[str]:
         return [p.strip() for p in self.crt_pairs.split(",") if p.strip()]
+
+    @property
+    def photon_pairs_list(self) -> list[str]:
+        return [p.strip() for p in self.photon_pairs.split(",") if p.strip()]
 
     @property
     def cors_origins_list(self) -> list[str]:

@@ -1,5 +1,26 @@
 # Day 1 Setup Checklist
 
+## STATUS: Day 1 / Phase 0 infra COMPLETE (2026-06-15)
+- PostgreSQL 16 running natively, role `quant`/`quant_pass`, db `quant_os`
+- Alembic migration applied — all 11 tables created
+- Redis (winget Redis.Redis 3.0.504) running, PONG confirmed
+  - NOTE: pinned `redis==4.6.0` in requirements.txt — redis-py>=5 sends HELLO/RESP3 which this old Redis build rejects
+- Celery worker starts clean, `health_check` task returns `{'status': 'ok'}`
+- Seed data loaded: SPY/AAPL/MSFT, 1620 rows each in `ohlcv` table
+- `.env` created from `.env.example`, DATABASE_URL points to native postgres (quant:quant_pass@localhost:5432/quant_os)
+- Run with: `$env:PYTHONPATH="."` before any python/celery/alembic command (no PYTHONPATH set globally)
+- pg_hba.conf: `host all all 127.0.0.1/32` set to `trust` (user did this manually, admin-elevated) — needed since native postgres password mgmt has no easy non-interactive path on Windows
+
+- LLM provider switched to OpenRouter owl-alpha (was NVIDIA NIM GLM-5.1). Smoke test pending re-run with new API key.
+- MT5 creds added to `.env` (login 52920995, server ICMarketsSC-Demo), `MetaTrader5` pip package installed (5.0.5735), uncommented in requirements.txt
+
+- MT5 connector verified: `initialize_mt5()` → True, `get_quotes(H4, EURUSD)` returned live candles through 2026-06-15. (Root cause of earlier IPC timeout: server name resolved to wrong broker entry — user fixed via MT5 login dialog.)
+
+## Remaining before Phase 1
+- Docker Desktop installed but unverified/unused (going native instead)
+- git push not yet done
+- Day 1 human checkpoint: inspect seeded data vs Yahoo Finance, sign off
+
 ## Already completed (by Claude Code session)
 - [x] Python 3.11.9 installed (`C:\Users\Hp\AppData\Local\Programs\Python\Python311\python.exe`)
 - [x] Virtual environment created (`.venv\`)
@@ -17,7 +38,7 @@
 ### 1. Copy .env.example → .env and fill in values
 ```
 cp .env.example .env
-# Edit .env — fill in NVIDIA_API_KEY (get from https://build.nvidia.com), DATABASE_URL, etc.
+# Edit .env — fill in OPENROUTER_API_KEY (get from https://openrouter.ai), DATABASE_URL, etc.
 ```
 
 ### 2. Docker Desktop (for PostgreSQL + Redis) 
@@ -71,10 +92,10 @@ Checks: SPY, AAPL, MSFT OHLCV stored in DB.
 - Configure MT5_LOGIN, MT5_PASSWORD, MT5_SERVER in .env
 - Test: `python scripts/run_crt_scan.py`
 
-### 10. NVIDIA NIM API key
-- Go to https://build.nvidia.com/z-ai/glm-5.1
-- Sign up (free, no credit card)
-- Generate API key → add to .env as NVIDIA_API_KEY
+### 10. OpenRouter API key
+- Go to https://openrouter.ai
+- Sign up and generate an API key
+- Add to .env as OPENROUTER_API_KEY
 
 ### 11. Push to GitHub
 ```

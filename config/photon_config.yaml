@@ -1,0 +1,42 @@
+# Photon Agent Configuration
+photon:
+  pairs:
+    - EURUSD
+    - GBPUSD
+    - USDCHF
+    - USDCAD
+    - AUDUSD
+    - USDJPY
+    - NZDUSD
+    - XAUUSD
+
+  timeframes:
+    perspective: D1
+    narrative: H4
+    bias: M15
+    entry: M5
+
+  structure:
+    swing_fractal_n: 2
+    bos_confirm: close  # close or wick
+
+  poi:
+    departure_atr_mult: 1.5
+    max_base_candles: 5
+    fresh_only: true
+    fvg_min_atr_mult: 0.25
+
+  liquidity:
+    equal_level_tolerance_atr: 0.1
+
+  entry:
+    min_alignment: 3
+    min_rr: 2.0
+    sl_atr_buffer_mult: 0.3
+
+  news:
+    blackout_mins: 15
+    # schedule: [] # v2: automated calendar
+
+  backtest:
+    min_setups: 50

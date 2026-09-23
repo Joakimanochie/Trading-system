@@ -8,7 +8,7 @@ alembic>=1.13
 psycopg2-binary>=2.9
 
 # Cache / task queue
-redis>=5.0
+redis==4.6.0  # pinned: Windows Redis 3.0.504 (winget) doesn't support HELLO/RESP3 used by redis-py>=5
 celery[redis]>=5.4
 
 # Data & quant
@@ -19,11 +19,11 @@ vectorbt>=0.26
 matplotlib>=3.9
 mplfinance>=0.12
 
-# LLM / AI (OpenAI-compatible SDK — points to NVIDIA NIM)
+# LLM / AI (OpenAI-compatible SDK — points to OpenRouter)
 openai>=1.30.0
 
 # MetaTrader 5 (Windows only — comment out on Linux)
-# MetaTrader5>=5.0
+MetaTrader5>=5.0
 
 # Utilities
 python-dotenv>=1.0
@@ -35,6 +35,10 @@ websockets>=12.0
 
 # Orchestration
 langgraph>=0.1
+
+# Research agent (Phase 2): scanning arXiv/SSRN/QuantConnect
+requests>=2.31
+beautifulsoup4>=4.12
 
 # Dev dependencies
 black>=24.0

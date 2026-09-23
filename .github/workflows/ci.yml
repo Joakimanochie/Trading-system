@@ -64,8 +64,8 @@ jobs:
         env:
           DATABASE_URL: postgresql://quant:quant_pass@localhost:5432/quant_os_test
           REDIS_URL: redis://localhost:6379/0
-          NVIDIA_API_KEY: dummy
-          NVIDIA_NIM_BASE_URL: https://integrate.api.nvidia.com/v1
-          NVIDIA_NIM_MODEL: z-ai/glm-5.1
+          OPENROUTER_API_KEY: dummy
+          OPENROUTER_BASE_URL: https://openrouter.ai/api/v1
+          OPENROUTER_MODEL: openrouter/owl-alpha
           APP_SECRET_KEY: test-secret
         run: pytest tests/ -v --tb=short

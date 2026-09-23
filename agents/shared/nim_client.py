@@ -1,5 +1,5 @@
 """
-Singleton OpenAI client pointed at NVIDIA NIM (GLM-5.1).
+Singleton OpenAI client pointed at OpenRouter (owl-alpha).
 This is the ONLY LLM dependency across all agents — no other AI SDK is imported anywhere.
 """
 from __future__ import annotations
@@ -11,15 +11,20 @@ from openai import OpenAI
 _client: OpenAI | None = None
 
 
-def get_nim_client() -> OpenAI:
-    """Return a singleton OpenAI client pointed at NVIDIA NIM."""
+def get_llm_client() -> OpenAI:
+    """Return a singleton OpenAI client pointed at OpenRouter."""
     global _client
     if _client is None:
         _client = OpenAI(
-            base_url=os.environ["NVIDIA_NIM_BASE_URL"],
-            api_key=os.environ["NVIDIA_API_KEY"],
+            base_url=os.environ.get("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1"),
+            api_key=os.environ["OPENROUTER_API_KEY"],
+            timeout=120.0,
         )
     return _client
+
+
+# Keep backward-compatible alias
+get_nim_client = get_llm_client
 
 
 def nim_complete(
@@ -29,9 +34,9 @@ def nim_complete(
     max_tokens: int = 2048,
     stream: bool = False,
 ) -> str:
-    """Single-turn completion via GLM-5.1. Returns full text response."""
-    client = get_nim_client()
-    model = os.environ.get("NVIDIA_NIM_MODEL", "z-ai/glm-5.1")
+    """Single-turn completion via OpenRouter. Returns full text response."""
+    client = get_llm_client()
+    model = os.environ.get("OPENROUTER_MODEL", "openrouter/owl-alpha")
 
     messages: list[dict] = []
     if system:
@@ -44,7 +49,6 @@ def nim_complete(
             model=model,
             messages=messages,
             temperature=temperature,
-            top_p=float(os.environ.get("NVIDIA_NIM_TOP_P", "0.9")),
             max_tokens=max_tokens,
             stream=True,
         )
@@ -60,7 +64,6 @@ def nim_complete(
             model=model,
             messages=messages,
             temperature=temperature,
-            top_p=float(os.environ.get("NVIDIA_NIM_TOP_P", "0.9")),
             max_tokens=max_tokens,
         )
         return completion.choices[0].message.content

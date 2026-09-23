@@ -26,6 +26,23 @@ class Base(DeclarativeBase):
     pass
 
 
+# ─── OHLCV ───────────────────────────────────────────────────────────────────
+
+
+class OHLCV(Base):
+    __tablename__ = "ohlcv"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    ticker: Mapped[str] = mapped_column(String(20), nullable=False)
+    timeframe: Mapped[str] = mapped_column(String(10), nullable=False)
+    timestamp: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    open: Mapped[float] = mapped_column(Float, nullable=False)
+    high: Mapped[float] = mapped_column(Float, nullable=False)
+    low: Mapped[float] = mapped_column(Float, nullable=False)
+    close: Mapped[float] = mapped_column(Float, nullable=False)
+    volume: Mapped[int | None] = mapped_column(BigInteger)
+
+
 # ─── Enums ────────────────────────────────────────────────────────────────────
 
 
@@ -77,7 +94,7 @@ class Strategy(Base):
     asset_class: Mapped[str | None] = mapped_column(String(50))
     frequency: Mapped[str | None] = mapped_column(String(20))
     status: Mapped[StrategyStatus] = mapped_column(
-        Enum(StrategyStatus), default=StrategyStatus.IDEA_PROPOSED, nullable=False
+        Enum(StrategyStatus, native_enum=False), default=StrategyStatus.IDEA_PROPOSED, nullable=False
     )
     parameters: Mapped[dict | None] = mapped_column(JSON)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
@@ -100,7 +117,7 @@ class Signal(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     strategy_id: Mapped[int | None] = mapped_column(ForeignKey("strategies.id"))
     ticker: Mapped[str] = mapped_column(String(20), nullable=False)
-    direction: Mapped[SignalDirection] = mapped_column(Enum(SignalDirection), nullable=False)
+    direction: Mapped[SignalDirection] = mapped_column(Enum(SignalDirection, native_enum=False), nullable=False)
     entry_price: Mapped[float | None] = mapped_column(Float)
     stop_loss: Mapped[float | None] = mapped_column(Float)
     take_profit_1: Mapped[float | None] = mapped_column(Float)
@@ -128,7 +145,7 @@ class CRTSignal(Base):
     pair: Mapped[str] = mapped_column(String(20), nullable=False)
     htf: Mapped[str] = mapped_column(String(10), nullable=False)
     ltf: Mapped[str] = mapped_column(String(10), nullable=False)
-    direction: Mapped[SignalDirection] = mapped_column(Enum(SignalDirection), nullable=False)
+    direction: Mapped[SignalDirection] = mapped_column(Enum(SignalDirection, native_enum=False), nullable=False)
 
     # Anchor candle
     anchor_timestamp: Mapped[datetime | None] = mapped_column(DateTime)
@@ -167,7 +184,7 @@ class CRTSignal(Base):
     sl_hit: Mapped[bool | None] = mapped_column(Boolean)
     expired: Mapped[bool] = mapped_column(Boolean, default=False)
 
-    # Rationale from GLM-5.1
+    # Rationale from LLM
     nim_rationale: Mapped[str | None] = mapped_column(Text)
 
     # Chart export path
@@ -192,7 +209,7 @@ class KaabarPatternResult(Base):
     timeframe: Mapped[str] = mapped_column(String(10), nullable=False)
     pattern_name: Mapped[str] = mapped_column(String(100), nullable=False)
     pattern_category: Mapped[str | None] = mapped_column(String(50))
-    direction: Mapped[SignalDirection | None] = mapped_column(Enum(SignalDirection))
+    direction: Mapped[SignalDirection | None] = mapped_column(Enum(SignalDirection, native_enum=False))
     candle_timestamp: Mapped[datetime | None] = mapped_column(DateTime)
     signal_value: Mapped[int | None] = mapped_column(Integer)  # +1 bull, -1 bear
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
@@ -212,12 +229,12 @@ class Order(Base):
     signal_id: Mapped[int | None] = mapped_column(ForeignKey("signals.id"))
     broker_order_id: Mapped[str | None] = mapped_column(String(100))
     ticker: Mapped[str] = mapped_column(String(20), nullable=False)
-    side: Mapped[OrderSide] = mapped_column(Enum(OrderSide), nullable=False)
+    side: Mapped[OrderSide] = mapped_column(Enum(OrderSide, native_enum=False), nullable=False)
     quantity: Mapped[float] = mapped_column(Float, nullable=False)
     order_type: Mapped[str] = mapped_column(String(20), default="MARKET")
     limit_price: Mapped[float | None] = mapped_column(Float)
     status: Mapped[OrderStatus] = mapped_column(
-        Enum(OrderStatus), default=OrderStatus.PENDING, nullable=False
+        Enum(OrderStatus, native_enum=False), default=OrderStatus.PENDING, nullable=False
     )
     filled_quantity: Mapped[float] = mapped_column(Float, default=0.0)
     avg_fill_price: Mapped[float | None] = mapped_column(Float)
@@ -242,7 +259,7 @@ class Trade(Base):
     order_id: Mapped[int | None] = mapped_column(ForeignKey("orders.id"))
     strategy_id: Mapped[int | None] = mapped_column(ForeignKey("strategies.id"))
     ticker: Mapped[str] = mapped_column(String(20), nullable=False)
-    direction: Mapped[SignalDirection] = mapped_column(Enum(SignalDirection), nullable=False)
+    direction: Mapped[SignalDirection] = mapped_column(Enum(SignalDirection, native_enum=False), nullable=False)
     entry_price: Mapped[float] = mapped_column(Float, nullable=False)
     exit_price: Mapped[float | None] = mapped_column(Float)
     quantity: Mapped[float] = mapped_column(Float, nullable=False)
@@ -311,7 +328,7 @@ class StrategyIdea(Base):
     score_time_horizon: Mapped[float | None] = mapped_column(Float)
     total_score: Mapped[float | None] = mapped_column(Float)
     status: Mapped[IdeaStatus] = mapped_column(
-        Enum(IdeaStatus), default=IdeaStatus.PROPOSED, nullable=False
+        Enum(IdeaStatus, native_enum=False), default=IdeaStatus.PROPOSED, nullable=False
     )
     nim_summary: Mapped[str | None] = mapped_column(Text)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
